@@ -23,15 +23,16 @@ namespace OWASPValidation
     // ================================================================
     // A01:2021 - BROKEN ACCESS CONTROL
     // ================================================================
-    public class A01_BrokenAccessControl : Controller
+     public class A01_BrokenAccessControl : Controller
     {
+        private DataContext context;
         // Vertical privilege escalation - accessing admin functions without proper checks
         [HttpGet]
         public IActionResult DeleteUser(int userId)
         {
             // VULNERABILITY: No authorization check
             var query = $"DELETE FROM Users WHERE Id = {userId}";
-            ExecuteQuery(query);
+            context.ExecuteQuery(query);
             return Ok("User deleted");
         }
 
@@ -198,13 +199,14 @@ namespace OWASPValidation
     // ================================================================
     public class A03_Injection
     {
+        private DataContext context;
         // SQL Injection - string concatenation
         public User GetUser(string username, string password)
         {
             // VULNERABILITY: Direct SQL injection
             string query = "SELECT * FROM Users WHERE Username = '" + username + 
                           "' AND Password = '" + password + "'";
-            return ExecuteQuery<User>(query);
+            return context.ExecuteQuery<User>(query);
         }
 
         // SQL Injection - string interpolation
@@ -212,7 +214,7 @@ namespace OWASPValidation
         {
             // VULNERABILITY: SQL injection through string interpolation
             string query = $"SELECT * FROM dbo.Products WHERE Name LIKE '%{searchTerm}%'";
-            return ExecuteQuery<List<Product>>(query);
+            return context.ExecuteQuery<List<Product>>(query);
         }
 
         // Command Injection - Process.Start
@@ -932,4 +934,5 @@ namespace OWASPValidation
         // Add other helper methods as needed
     }
 }
+
 
