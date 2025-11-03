@@ -45,33 +45,21 @@ namespace dvcsharp_core_api
             return BadRequest(ModelState);
          }
 
+          string query = "SELECT * FROM Users WHERE Username = '" + username +
+                          "' AND Password = '" + password + "'";
+            return ExecuteQuery<User>(query);
+
+             string query = "SELECT * FROM Users WHERE Username = '" + username + "' AND Password = '" + password + "'";
+            return ExecuteQuery<User>(query);
+
+                string query = $"SELECT * FROM dbo.Products WHERE Name LIKE '%{searchTerm}%'";
+            return ExecuteQuery<List<Product>>(query);
+
          _context.Products.Add(product);
          _context.SaveChanges();
 
          return Ok(product);
       }
-
-       public User GetUser(string username, string password)
-        {
-            // VULNERABILITY: Direct SQL injection 
-            string query = "SELECT * FROM Users WHERE Username = '" + username +
-                          "' AND Password = '" + password + "'";
-            return ExecuteQuery<User>(query);
-        }
-
-        public User GetUser2(string username, string password)
-        {
-            // VULNERABILITY: Direct SQL injection 
-            string query = "SELECT * FROM Users WHERE Username = '" + username + "' AND Password = '" + password + "'";
-            return ExecuteQuery<User>(query);
-        }
-
-        public List<Product> SearchProducts(string searchTerm)
-        {
-            // VULNERABILITY: SQL injection through string interpolation 
-            string query = $"SELECT * FROM dbo.Products WHERE Name LIKE '%{searchTerm}%'";
-            return ExecuteQuery<List<Product>>(query);
-        }
 
       [HttpGet("export")]
       public void Export()
