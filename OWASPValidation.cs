@@ -59,7 +59,7 @@ namespace OWASPValidation
         {
             // VULNERABILITY: No ownership verification
             var sql = $"UPDATE Accounts SET Balance = {amount} WHERE Id = '{accountId}'";
-            ExecuteQuery(sql);
+            context.ExecuteQuery(sql);
         }
 
         // Bypassing access control through URL manipulation
@@ -106,12 +106,13 @@ namespace OWASPValidation
     // ================================================================
     public class A02_CryptographicFailures
     {
+        private DataContext context;
         // Storing passwords in plain text
         public void SaveUserPassword(string username, string password)
         {
             // VULNERABILITY: Plain text password storage
             var sql = $"INSERT INTO Users (Username, Password) VALUES ('{username}', '{password}')";
-            ExecuteQuery(sql);
+            context.ExecuteQuery(sql);
         }
 
         // Using weak hashing algorithm
@@ -370,7 +371,7 @@ namespace OWASPValidation
         public void DeleteAccount(int userId)
         {
             // VULNERABILITY: No confirmation or waiting period
-            ExecuteQuery($"DELETE FROM Users WHERE Id = {userId}");
+            context.ExecuteQuery($"DELETE FROM Users WHERE Id = {userId}");
         }
 
         // Trusting client-side validation only
@@ -686,6 +687,8 @@ namespace OWASPValidation
     // ================================================================
     public class A09_LoggingMonitoringFailures
     {
+        private DataContext context;
+        
         // No logging of authentication attempts
         public bool Login(string username, string password)
         {
@@ -755,7 +758,7 @@ namespace OWASPValidation
         public void DeleteUser(int userId)
         {
             // VULNERABILITY: No audit trail
-            ExecuteQuery($"DELETE FROM Users WHERE Id = {userId}");
+            context.ExecuteQuery($"DELETE FROM Users WHERE Id = {userId}");
             // Missing: who deleted, when, why
         }
 
@@ -934,5 +937,6 @@ namespace OWASPValidation
         // Add other helper methods as needed
     }
 }
+
 
 
